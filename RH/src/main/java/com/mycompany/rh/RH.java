@@ -33,6 +33,47 @@ public class RH extends javax.swing.JFrame {
         listaFunc.add(new Gerente(aumentarID(), "Fulano", 5000));
         listaFunc.add(new Estagiario(aumentarID(), "Ciclano", 1600));
         listaFunc.add(new Desenvolvedor(4, listaFunc.get(1).getId(), aumentarID(), "Ana", 4500));
+        
+    }
+    
+    private double salarioBruto(){
+        var salarioBruto = 0D;
+        
+        for (Funcionario func : listaFunc){
+            salarioBruto += func.getSalarioBase();
+        }
+        
+        return salarioBruto;
+    }
+    
+    private double apenasBonus(){
+        var bonus = 0D;
+        
+        for (Funcionario func : listaFunc){
+            if (func instanceof Estagiario){
+                bonus += 0;
+            }
+            else if (func instanceof Designer){
+                bonus += ((Designer) func).getAdicional();
+            }
+            else if (func instanceof Desenvolvedor){
+                bonus += ((Desenvolvedor) func).calcularBonus();
+            }
+            else if (func instanceof Gerente){
+                for (Funcionario devs : listaFunc){
+                    if (devs instanceof Desenvolvedor){
+                        if (((Desenvolvedor) devs).getIdChefe() == acharFunc(func.getId()).getId()){
+                            bonus += ((Desenvolvedor) devs).calcularBonus();
+                        }
+                    }
+                }
+            }
+        }
+        return bonus;
+    }
+    
+    private void total(){
+        
     }
     
     private double calcGerente(int id){
@@ -84,6 +125,8 @@ public class RH extends javax.swing.JFrame {
     private void initComponents() {
 
         buttonGroup1 = new javax.swing.ButtonGroup();
+        buttonGroup2 = new javax.swing.ButtonGroup();
+        buttonGroup3 = new javax.swing.ButtonGroup();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
@@ -94,6 +137,9 @@ public class RH extends javax.swing.JFrame {
         jRadioButton3 = new javax.swing.JRadioButton();
         jRadioButton4 = new javax.swing.JRadioButton();
         jButton4 = new javax.swing.JButton();
+        radio_bonus = new javax.swing.JRadioButton();
+        radio_bruto = new javax.swing.JRadioButton();
+        radio_total = new javax.swing.JRadioButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -124,13 +170,17 @@ public class RH extends javax.swing.JFrame {
         buttonGroup1.add(btn_nome);
         btn_nome.setText("Nome");
 
+        buttonGroup2.add(jRadioButton1);
         jRadioButton1.setText("Gerente");
 
+        buttonGroup2.add(jRadioButton2);
         jRadioButton2.setText("Designer");
 
+        buttonGroup2.add(jRadioButton3);
         jRadioButton3.setText("Desenvolvedor");
 
-        jRadioButton4.setText("jRadioButton4");
+        buttonGroup2.add(jRadioButton4);
+        jRadioButton4.setText("Estagiário");
 
         jButton4.setText("Folha Salarial");
         jButton4.addActionListener(new java.awt.event.ActionListener() {
@@ -138,6 +188,15 @@ public class RH extends javax.swing.JFrame {
                 jButton4ActionPerformed(evt);
             }
         });
+
+        buttonGroup3.add(radio_bonus);
+        radio_bonus.setText("Apenas Bônus");
+
+        buttonGroup3.add(radio_bruto);
+        radio_bruto.setText("Bruto");
+
+        buttonGroup3.add(radio_total);
+        radio_total.setText("Total");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -157,13 +216,17 @@ public class RH extends javax.swing.JFrame {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jButton4)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(jButton2, javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(btn_ID)
-                                    .addComponent(jButton3)
-                                    .addComponent(btn_nome))))))
+                            .addComponent(jButton2, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(btn_ID)
+                                .addComponent(jButton3)
+                                .addComponent(btn_nome)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jButton4)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(radio_bruto)
+                                        .addComponent(radio_bonus)
+                                        .addComponent(radio_total)))))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -171,23 +234,32 @@ public class RH extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(19, 19, 19)
                 .addComponent(jButton1)
-                .addGap(18, 18, 18)
-                .addComponent(jRadioButton1)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addComponent(jRadioButton1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jRadioButton2))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(32, 32, 32)
+                        .addComponent(jButton4)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jRadioButton2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jRadioButton3)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jRadioButton3)
+                    .addComponent(radio_bonus))
                 .addGap(8, 8, 8)
-                .addComponent(jRadioButton4)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 64, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jRadioButton4)
+                    .addComponent(radio_bruto))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(radio_total)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 37, Short.MAX_VALUE)
                 .addComponent(jButton3)
                 .addGap(18, 18, 18)
                 .addComponent(btn_ID)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btn_nome)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButton4)
-                .addGap(19, 19, 19)
+                .addGap(54, 54, 54)
                 .addComponent(jButton2)
                 .addContainerGap())
         );
@@ -241,18 +313,18 @@ public class RH extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        double folha = 0;
-        
-        for (Funcionario func : listaFunc){
-            if (func instanceof Gerente){
-                folha += func.calcularSalario() + ((Gerente) func).calcularBonus(func.getId());
-            }
-            else {
-                folha += func.calcularSalario();
-            }
+        if (radio_bonus.isSelected()){
+            JOptionPane.showMessageDialog(null, apenasBonus());
         }
-        
-        JOptionPane.showMessageDialog(null, "Folha de Pagamento da Empresa: " + folha);
+        else if (radio_bruto.isSelected()){
+            JOptionPane.showMessageDialog(null, salarioBruto());
+        }
+        else if (radio_total.isSelected()){
+            JOptionPane.showMessageDialog(null, salarioBruto() + apenasBonus());
+        }
+        else {
+            JOptionPane.showMessageDialog(null, "Selecione algum botão!");
+        }
     }//GEN-LAST:event_jButton4ActionPerformed
 
     /**
@@ -294,6 +366,8 @@ public class RH extends javax.swing.JFrame {
     private javax.swing.JRadioButton btn_ID;
     private javax.swing.JRadioButton btn_nome;
     private javax.swing.ButtonGroup buttonGroup1;
+    private javax.swing.ButtonGroup buttonGroup2;
+    private javax.swing.ButtonGroup buttonGroup3;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
@@ -302,5 +376,8 @@ public class RH extends javax.swing.JFrame {
     private javax.swing.JRadioButton jRadioButton2;
     private javax.swing.JRadioButton jRadioButton3;
     private javax.swing.JRadioButton jRadioButton4;
+    private javax.swing.JRadioButton radio_bonus;
+    private javax.swing.JRadioButton radio_bruto;
+    private javax.swing.JRadioButton radio_total;
     // End of variables declaration//GEN-END:variables
 }

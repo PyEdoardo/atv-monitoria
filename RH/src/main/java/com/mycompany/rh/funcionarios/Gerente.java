@@ -43,5 +43,4 @@ public class Gerente extends Funcionario implements Bonus {
         sb.append('}');
         return sb.toString();
     }
-    
 }

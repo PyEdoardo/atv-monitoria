@@ -14,5 +14,5 @@ public interface Bonus {
     default double aplicarBonus(double salario){
         return salario + calcularBonus();
     }
-    
+   
 }
